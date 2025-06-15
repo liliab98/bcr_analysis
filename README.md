@@ -46,7 +46,7 @@ Clinical metadata is integrated within these RDS files.
 
 - R ≥ 4.2
 - R packages:
-  - `tidyverse`, `vegan`, `ggpubr`, `survival`, `survminer`, `ComplexHeatmap`, `umap`, `pheatmap`, etc.
+  - `tidyverse`, `vegan`, `ggpubr`, `survival`, `survminer`, `umap`, `pheatmap`, etc.
 
 ---
 
