@@ -289,7 +289,7 @@ meta_renal <- renal_data %>%
   distinct(SampleId, DonorStatus, AgeSample) %>%
   rename(sample = SampleId, health_status = DonorStatus, Age = AgeSample)
 
-umap_renal_health_plot <- plot_umap(umap_renal_IGHV, meta_renal, "health_status", "IGH V Usage (Renal) by Health")
+umap_renal_health_plot <- plot_umap(umap_renal_IGHV, meta_renal, "health_status", "IGH V Usage (Renal) by Health Status")
 umap_renal_age_plot <- plot_umap(umap_renal_IGHV, meta_renal, "Age", "IGH V Usage (Renal) by Age", gradient = TRUE)
 
 print(umap_renal_health_plot)
@@ -303,4 +303,4 @@ print(umap_renal_age_plot)
 # Save the plot as .png for defense
 #ggsave("umap_igh_v_bladder_age.png", plot = umap_bladder_age_plot, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
 #ggsave("umap_igh_v_renal_age.png", plot = umap_renal_age_plot, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
-#ggsave("umap_igh_v_renal_health_status.png", plot = umap_renal_health_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
+ggsave("umap_igh_v_renal_health_status.png", plot = umap_renal_health_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")

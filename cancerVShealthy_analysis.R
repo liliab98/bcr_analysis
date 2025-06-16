@@ -146,7 +146,7 @@ print(read_counts_all_chains_plot_thesis)
 
 # Save the plot as .png for defense
 #ggsave("healthyVSsick_read_counts.png", plot = read_counts_plot_thesis, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
-#ggsave("healthyVSsick_read_counts_all_chains.pdf", plot = read_counts_all_chains_plot_thesis, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("healthyVSsick_read_counts_all_chains.png", plot = read_counts_all_chains_plot_thesis, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
 
 ################################################################################
 
