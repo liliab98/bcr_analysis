@@ -1,7 +1,7 @@
 # Survival Analysis, Liliane Bader, 15.Juni 2025
 
 # Renal and Bladder Datasets ###################################################
-source("github/config.R")
+source("config.R")
 renal_data <- readRDS(renal_data_path)
 bladder_data <- readRDS(bladder_data_path)
 
@@ -84,7 +84,7 @@ survival_shannon_bladder_plot <- plot_survival(fit_bladder, bladder_shannon_comb
 print(survival_shannon_renal_plot)
 print(survival_shannon_bladder_plot)
 
-# Save the plot as .pdf
+# Save the plot as .pdf for the thesis
 # Save just the KM survival plot (without risk table)
 #ggsave("renal_survival_shannon.pdf", plot = survival_shannon_renal_plot$plot, width = 8, height = 6)
 #ggsave("bladder_survival_shannon.pdf", plot = survival_shannon_bladder_plot$plot, width = 8, height = 6)
@@ -97,6 +97,25 @@ print(survival_shannon_bladder_plot)
 #grid.arrange(survival_shannon_bladder_plot$plot, survival_shannon_bladder_plot$table, 
 #             ncol = 1, heights = c(2/3, 1/3))
 #dev.off()
+
+# Save renal survival plot + table as PNG for the defense
+# png("renal_survival_shannon_full.png", width = 8, height = 6, units = "in", res = 300)
+# grid.arrange(
+#   survival_shannon_renal_plot$plot,
+#   survival_shannon_renal_plot$table,
+#   ncol = 1,
+#   heights = c(2/3, 1/3)
+# )
+# dev.off()
+# png("bladder_survival_shannon_full.png", width = 8, height = 6, units = "in", res = 300)
+# grid.arrange(
+#   survival_shannon_bladder_plot$plot,
+#   survival_shannon_bladder_plot$table,
+#   ncol = 1,
+#   heights = c(2/3, 1/3)
+# )
+# dev.off()
+
 ################################################################################
 
 # Cox Model ####################################################################
@@ -134,17 +153,22 @@ summary(cox_renal)
 summary(cox_bladder)
 
 # Plots
-plot_forest <- function(cox_model, data, title = NULL, fontsize = 1.2) {
+plot_forest <- function(cox_model, data, title = NULL, fontsize = 1.5) {
   ggforest(cox_model, data = data, main = title, fontsize = fontsize)
 }
-renal_hazard_ratio_plot <- plot_forest(cox_renal, renal_cox_data)
-bladder_hazard_ratio_plot <- plot_forest(cox_bladder, bladder_cox_data)
+renal_hazard_ratio_plot <- plot_forest(cox_renal, renal_cox_data, title = "Renal Cox Model: Hazard Ratios")
+bladder_hazard_ratio_plot <- plot_forest(cox_bladder, bladder_cox_data, title = "Bladder Cox Model: Hazard Ratios")
 
 print(renal_hazard_ratio_plot)
 print(bladder_hazard_ratio_plot)
 
+# Save the plot as .pdf for the thesis
 # ggsave("renal_hazard_ratio.pdf", plot = renal_hazard_ratio_plot, width = 10, height = 6)
 # ggsave("bladder_hazard_ratio.pdf", plot = bladder_hazard_ratio_plot, width = 10, height = 6)
+
+# Save the plot as .png for defense
+ggsave("renal_hazard_ratio.png", plot = renal_hazard_ratio_plot, width = 9, height = 5, units = "in", dpi = 300, bg = "white")
+ggsave("bladder_hazard_ratio.png", plot = bladder_hazard_ratio_plot, width = 9, height = 5, units = "in", dpi = 300, bg = "white")
 
 # Test assumptions (proportional hazards):
 cox.zph(cox_renal)

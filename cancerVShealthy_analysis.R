@@ -1,7 +1,7 @@
 # Cancer vs Healthy Immune Repertoire Analysis, Liliane Bader, 15.Juni 2025
 
 # Renal and Bladder Datasets ###################################################
-source("github/config.R")
+source("config.R")
 renal_data <- readRDS(renal_data_path)
 bladder_data <- readRDS(bladder_data_path)
 
@@ -100,21 +100,20 @@ prepare_long_reads <- function(df, id_col, group_col, colors) {
 long_reads <- prepare_long_reads(combined_data, id_col = "SampleId", group_col = "DonorStatus", colors = colors)
 
 # Plot
-plot_read_counts <- function(df, comparisons, colors, gene_filter = NULL, title = NULL, size_base = 40) {
+plot_read_counts <- function(df, comparisons, colors, gene_filter = NULL, title = NULL, size_base = 20) {
   if (!is.null(gene_filter)) df <- df %>% filter(Gene %in% gene_filter)
   
-  ggplot(df, aes(x = Group, y = ReadCount)) +
+  p <- ggplot(df, aes(x = Group, y = ReadCount)) +
     geom_boxplot(aes(fill = DonorStatus), outlier.shape = NA, color = "black", alpha = 0.6) +
     geom_jitter(aes(color = DonorStatus), width = 0.2, size = 3, alpha = 0.6) +
     stat_compare_means(method = "wilcox.test", 
                        comparisons = comparisons, 
                        label = "p.signif",
                        tip.length = 0.02,
-                       size = size_base * 0.35) +
+                       size = size_base * 0.3) +
     scale_y_continuous(labels = scales::comma) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
-    facet_wrap(~ Gene, scales = "free_y", ncol = 2) +
     xlab(NULL) +
     ylab("Read Count") +
     theme_minimal() +
@@ -127,15 +126,28 @@ plot_read_counts <- function(df, comparisons, colors, gene_filter = NULL, title 
       plot.title = element_text(size = size_base * 1.2, hjust = 0.5)
     ) +
     ggtitle(title)
+  
+  # Only facet if there's more than one unique gene
+  if (length(unique(df$Gene)) > 1) {
+    p <- p + facet_wrap(~ Gene, scales = "free_y", ncol = 2)
+  }
+  
+  return(p)
 }
-read_counts_plot_thesis <- plot_read_counts(long_reads, my_comparisons, colors, title = "Read Counts by Group")
+read_counts_plot_thesis <- plot_read_counts(long_reads, my_comparisons, colors, size_base = 10) #, title = "Read Counts by Group")
 read_counts_all_chains_plot_thesis <- plot_read_counts(long_reads, my_comparisons, colors, gene_filter = "combined", title = "Total Read Count")
 
 print(read_counts_plot_thesis)
 print(read_counts_all_chains_plot_thesis)
 
+# Save the plot as .pdf for the thesis
 #ggsave("healthyVSsick_read_counts.pdf", plot = read_counts_plot_thesis, width = 25, height = 25, units = "in")
 #ggsave("healthyVSsick_read_counts_all_chains.pdf", plot = read_counts_all_chains_plot_thesis, width = 20, height = 15, units = "in")
+
+# Save the plot as .png for defense
+#ggsave("healthyVSsick_read_counts.png", plot = read_counts_plot_thesis, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("healthyVSsick_read_counts_all_chains.pdf", plot = read_counts_all_chains_plot_thesis, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+
 ################################################################################
 
 # Shannon Diversity ############################################################
@@ -229,8 +241,8 @@ shannon_all_chains_plot_thesis <- plot_shannon_diversity(
   gene_filter = "Combined",
   title = "Combined Shannon Diversity"
 )
-print(shannon_all_chains_plot_thesis)
-print(shannon_healthy_sick_plot_thesis)
+#print(shannon_all_chains_plot_thesis)
+#print(shannon_healthy_sick_plot_thesis)
 
 #ggsave("healthyVSsick_shannon.pdf", plot = shannon_healthy_sick_plot_thesis, width = 25, height = 25, units = "in")
 #ggsave("healthyVSsick_shannon_all_chains.pdf", plot = shannon_all_chains_plot_thesis, width = 20, height = 15, units = "in")
@@ -243,21 +255,20 @@ diversity_data <- compute_shannon_and_normalized(combined_data)
 diversity_data$DonorStatus <- factor(diversity_data$DonorStatus, levels = c("Renal", "Healthy", "Bladder"))
 
 # Plot normalized diversity
-plot_normalized_shannon <- function(df, comparisons, colors, gene_filter = NULL, title = NULL, size_base = 40) {
+plot_normalized_shannon <- function(df, comparisons, colors, gene_filter = NULL, title = NULL, size_base = 20) {
   if (!is.null(gene_filter)) df <- df %>% filter(Chain %in% gene_filter)
   
-  ggplot(df, aes(x = DonorStatus, y = Normalized_Shannon)) +
+  p <- ggplot(df, aes(x = DonorStatus, y = Normalized_Shannon)) +
     geom_boxplot(aes(fill = DonorStatus), outlier.shape = NA, color = "black", alpha = 0.6) +
     geom_jitter(aes(color = DonorStatus), width = 0.2, size = 3, alpha = 0.6) +
-    facet_wrap(~ Chain, scales = "free_y", ncol = 2) +
+    #facet_wrap(~ Chain, scales = "free_y", ncol = 2) +
     stat_compare_means(method = "wilcox.test", 
                        comparisons = comparisons, 
                        label = "p.signif",
                        tip.length = 0.02,
-                       size = size_base * 0.35) +
+                       size = size_base * 0.3) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
     xlab(NULL) +
     ylab("Normalized Shannon Diversity") +
     theme_minimal() +
@@ -270,13 +281,20 @@ plot_normalized_shannon <- function(df, comparisons, colors, gene_filter = NULL,
       plot.title = element_text(size = size_base * 1.2, hjust = 0.5)
     ) +
     ggtitle(title)
+  # Only facet if there's more than one unique gene
+  if (length(unique(df$Chain)) > 1) {
+    p <- p + facet_wrap(~ Chain, scales = "free_y", ncol = 2)
+  }
+  
+  return(p)
 }
 normalized_shannon_all <- plot_normalized_shannon(
   df = diversity_data,
   comparisons = my_comparisons,
   colors = colors,
   gene_filter = NULL,
-  title = "Normalized Shannon Diversity by Chain"
+  #title = "Normalized Shannon Diversity by Chain",
+  size_base = 10
 )
 
 normalized_shannon_combined <- plot_normalized_shannon(
@@ -284,19 +302,41 @@ normalized_shannon_combined <- plot_normalized_shannon(
   comparisons = my_comparisons,
   colors = colors,
   gene_filter = "Combined",
-  title = "Normalized Shannon Diversity (Combined)"
+  title = "Normalized Shannon Diversity"
 )
 
 print(normalized_shannon_all)
 print(normalized_shannon_combined)
 
+# Save the plot as .pdf for the thesis
 # ggsave("normalized_shannon_all_chains.pdf", normalized_shannon_all, width = 25, height = 25, units = "in")
 # ggsave("normalized_shannon_combined.pdf", normalized_shannon_combined, width = 20, height = 15, units = "in")
+
+# Save the plot as .png for defense
+#ggsave("normalized_shannon_all_chains.png", plot = normalized_shannon_all, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("normalized_shannon_combined.png", plot = normalized_shannon_combined, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+
 ################################################################################
 
 # Clonal Expansion #############################################################
 # Top N Clones: Fraction of total reads from the top 10 clones.
 # 50% of Reads Clones: Number of clones contributing to the first 50% of reads.
+# Fraction of total reads from top N clones
+compute_top_n_clones <- function(df, top_n = 10) {
+  if (!"readCount" %in% names(df)) stop("Missing 'readCount' column in input.")
+  sorted_reads <- sort(df$readCount, decreasing = TRUE)
+  top_reads <- sum(sorted_reads[1:min(top_n, length(sorted_reads))])
+  total_reads <- sum(df$readCount)
+  return(top_reads / total_reads)
+}
+# Number of clones that contribute to 50% of reads
+compute_50pct_clones <- function(df) {
+  if (!"readCount" %in% names(df)) stop("Missing 'readCount' column in input.")
+  sorted_counts <- sort(df$readCount, decreasing = TRUE)
+  cumulative_fraction <- cumsum(sorted_counts) / sum(sorted_counts)
+  num_clones <- which(cumulative_fraction >= 0.5)[1]
+  return(num_clones)
+}
 compute_clonal_metrics <- function(data, chains = c("mixcr_df_IGH", "mixcr_df_IGK", "mixcr_df_IGL"), top_n = 10) {
   top_n_list <- list()
   pct50_list <- list()
@@ -358,18 +398,18 @@ pct_50_df <- clonal_results$pct_50_df %>%
   mutate(DonorStatus = factor(DonorStatus, levels = c("Renal", "Healthy", "Bladder")))
 
 # Plot
-plot_clonal_expansion <- function(df, ylab_text, scale_log = FALSE, gene_filter = NULL, title = NULL, size_base = 40) {
+plot_clonal_expansion <- function(df, ylab_text, scale_log = FALSE, gene_filter = NULL, title = NULL, size_base = 20) {
   if (!is.null(gene_filter)) df <- df %>% filter(Chain %in% gene_filter)
   
   p <- ggplot(df, aes(x = DonorStatus, y = ClonalExpansion)) +
     geom_boxplot(aes(fill = DonorStatus), outlier.shape = NA, color = "black", alpha = 0.6) +
     geom_jitter(aes(color = DonorStatus), width = 0.2, size = 3, alpha = 0.6) +
-    facet_wrap(~ Chain, scales = "free_y", ncol = 2) +
+    #facet_wrap(~ Chain, scales = "free_y", ncol = 2) +
     stat_compare_means(method = "wilcox.test", 
                        comparisons = my_comparisons, 
                        label = "p.signif",
                        tip.length = 0.02,
-                       size = size_base * 0.35) +
+                       size = size_base * 0.3) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     xlab(NULL) +
@@ -390,33 +430,40 @@ plot_clonal_expansion <- function(df, ylab_text, scale_log = FALSE, gene_filter 
     p <- p + scale_y_continuous(labels = comma)
   }
   
+  # Only facet if there's more than one unique gene
+  if (length(unique(df$Chain)) > 1) {
+    p <- p + facet_wrap(~ Chain, scales = "free_y", ncol = 2)
+  }
+  
   return(p)
 }
 
 # Plot Top 10 clones (all chains)
 plot_top10 <- plot_clonal_expansion(top_n_df, 
-                                    ylab_text = "Fraction of Total Reads (log10)",
+                                    ylab_text = "Fraction of Reads (log10)",
                                     scale_log = TRUE, 
-                                    title = "Top 10 Clonal Expansion")
+                                    #title = "Top 10 Clonal Expansion",
+                                    size_base = 10)
 
 # Plot Clones for 50% reads (all chains)
 plot_50pct <- plot_clonal_expansion(pct_50_df, 
-                                    ylab_text = "Number of Clones for 50% Reads", 
+                                    ylab_text = "Number of Clones", 
                                     scale_log = FALSE, 
-                                    title = "Clones for 50% of Reads")
+                                    #title = "Clones for 50% of Reads",
+                                    size_base = 10)
 
 # Plot combined only
 plot_top10_combined <- plot_clonal_expansion(top_n_df, 
                                              gene_filter = "Combined",
-                                             ylab_text = "Fraction of Total Reads (log10)",
+                                             ylab_text = "Fraction of Reads (log10)",
                                              scale_log = TRUE,
-                                             title = "Top 10 Clones (Combined)")
+                                             title = "Top 10 Clones")
 
 plot_50pct_combined <- plot_clonal_expansion(pct_50_df, 
                                              gene_filter = "Combined",
-                                             ylab_text = "Number of Clones for 50% Reads",
+                                             ylab_text = "Number of Clones",
                                              scale_log = FALSE,
-                                             title = "Clones for 50% of Reads (Combined)")
+                                             title = "Clones for 50% of Reads")
 
 # Display
 print(plot_top10)
@@ -424,10 +471,15 @@ print(plot_50pct)
 print(plot_top10_combined)
 print(plot_50pct_combined)
 
+# Save the plot as .pdf for the thesis
 #ggsave("top10_clonal_expansion_all.pdf", plot_top10, width = 25, height = 25, units = "in")
 #ggsave("clones_50pct_reads_all.pdf", plot_50pct, width = 25, height = 25, units = "in")
 #ggsave("top10_clonal_expansion_combined.pdf", plot_top10_combined, width = 20, height = 15, units = "in")
 #ggsave("clones_50pct_reads_combined.pdf", plot_50pct_combined, width = 20, height = 15, units = "in")
 
-
+# Save the plot as .png for defense
+#ggsave("top10_clonal_expansion_all.png", plot = plot_top10, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("clones_50pct_reads_all.png", plot = plot_50pct, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("top10_clonal_expansion_combined.png", plot = plot_top10_combined, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("clones_50pct_reads_combined.png", plot = plot_50pct_combined, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
 

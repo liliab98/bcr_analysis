@@ -236,19 +236,24 @@ run_umap_gene_usage <- function(usage_df, gene_column, config = umap.defaults) {
   
   return(umap_df)
 }
-plot_umap <- function(umap_df, meta_df, color_col, title, palette = "Set1", gradient = FALSE, size = 3) {
+plot_umap <- function(umap_df, meta_df, color_col, title, palette = "Set1", gradient = FALSE) {
   merged_df <- left_join(umap_df, meta_df, by = "sample")
   
   p <- ggplot(merged_df, aes(x = V1, y = V2, color = .data[[color_col]])) +
-    geom_point(size = size) +
-    labs(title = title, x = "UMAP 1", y = "UMAP 2") +
+    geom_point(size = 3) +
+    labs(
+      title = title,
+      x = "UMAP 1",
+      y = "UMAP 2",
+      color = gsub("_", " ", tools::toTitleCase(color_col))  # <--- sets a nice default
+    ) +
     theme_minimal() +
     theme(
-      legend.title = element_text(size = 15),
-      legend.text = element_text(size = 14),
-      axis.title.x = element_text(size = 16),
-      axis.title.y = element_text(size = 16),
-      axis.text = element_text(size = 13)
+      legend.title = element_text(size = 20),
+      legend.text = element_text(size = 20),
+      axis.title = element_text(size = 25),
+      axis.text = element_text(size = 25),
+      plot.title = element_text(size = 25)
     )
   
   if (gradient) {
@@ -290,6 +295,12 @@ umap_renal_age_plot <- plot_umap(umap_renal_IGHV, meta_renal, "Age", "IGH V Usag
 print(umap_renal_health_plot)
 print(umap_renal_age_plot)
 
+# Save the plot as .pdf for the thesis
 #ggsave("umap_igh_v_bladder_age.pdf", plot = umap_bladder_age_plot, width = 8, height = 6, units = "in")
 #ggsave("umap_igh_v_renal_health_status.pdf", plot = umap_renal_age_plot, width = 8, height = 6, units = "in")
 #ggsave("umap_igh_v_renal_age.pdf", plot = umap_renal_health_plot, width = 8, height = 6, units = "in")
+
+# Save the plot as .png for defense
+#ggsave("umap_igh_v_bladder_age.png", plot = umap_bladder_age_plot, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("umap_igh_v_renal_age.png", plot = umap_renal_age_plot, width = 6, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("umap_igh_v_renal_health_status.png", plot = umap_renal_health_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")

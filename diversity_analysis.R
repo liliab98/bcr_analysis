@@ -50,9 +50,9 @@ plot_shannon_histogram <- function(diversity_df, title = NULL) {
     theme_minimal() +
     labs(x = "Shannon Diversity", y = "Frequency", title = title) +
     theme(
-      axis.text = element_text(size = 15),
-      axis.title = element_text(size = 15),
-      plot.title = element_text(size = 16, face = "bold")
+      axis.text = element_text(size = 25),
+      axis.title = element_text(size = 25),
+      plot.title = element_text(size = 25)
     )
 }
 renal_shannon_plot <- plot_shannon_histogram(renal_shannon, "Renal: Shannon Diversity")
@@ -61,9 +61,14 @@ bladder_shannon_plot <- plot_shannon_histogram(bladder_shannon, "Bladder: Shanno
 print(renal_shannon_plot)
 print(bladder_shannon_plot)
 
-# Save the plot as .pdf
+# Save the plot as .pdf fo the thesis
 #ggsave("renal_shannon_diversity.pdf", plot = renal_shannon_plot, width = 6, height = 5, units = "in")
 #ggsave("bladder_shannon_diversity.pdf", plot = bladder_shannon_plot, width = 6, height = 5, units = "in")
+
+# Save the plot as .png for defense
+#ggsave("renal_shannon_diversity.png", plot = renal_shannon_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("bladder_shannon_diversity.png", plot = bladder_shannon_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
+
 ################################################################################
 
 # Normalized Shannon Diversity #################################################
@@ -106,23 +111,28 @@ plot_normalized_shannon <- function(data, title = NULL) {
     theme_minimal() +
     labs(x = "Normalized Shannon Diversity", 
          y = "Frequency", 
-         #title = title
+         title = title
          ) +
     theme(
-      axis.text = element_text(size = 15),
-      axis.title = element_text(size = 15),
-      plot.title = element_text(size = 16, face = "bold")
+      axis.text = element_text(size = 25),
+      axis.title = element_text(size = 25),
+      plot.title = element_text(size = 25)
     )
 }
-renal_plot <- plot_normalized_shannon(renal_norm_shannon, "Renal: Normalized Shannon")
-bladder_plot <- plot_normalized_shannon(bladder_norm_shannon, "Bladder: Normalized Shannon")
+renal_normalized_shannon_plot <- plot_normalized_shannon(renal_norm_shannon, "Renal: Normalized Shannon Diversity")
+bladder_normalized_shannon_plot <- plot_normalized_shannon(bladder_norm_shannon, "Bladder: Normalized Shannon Diversity")
 
-print(renal_plot)
-print(bladder_plot)
+print(renal_normalized_shannon_plot)
+print(bladder_normalized_shannon_plot)
 
-# Save the plot as .pdf
+# Save the plot as .pdf for the thesis
 #ggsave("renal_normalized_shannon_diversity.pdf", plot = renal_plot, width = 6, height = 5, units = "in")
 #ggsave("bladder_normalized_shannon_diversity.pdf", plot = bladder_plot, width = 6, height = 5, units = "in")
+
+# Save the plot as .png for defense
+#ggsave("renal_normalized_shannon_diversity.png", plot = renal_normalized_shannon_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("bladder_normalized_shannon_diversity.png", plot = bladder_normalized_shannon_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
+
 ################################################################################
 
 # Gini Index ###################################################################
@@ -154,13 +164,13 @@ bladder_gini <- compute_gini_per_sample(bladder_data, bladder_data$sample)
 
 plot_gini_histogram <- function(gini_df, title = NULL) {
   ggplot(gini_df, aes(x = Gini)) +
-    geom_histogram(binwidth = 0.01, fill = "steelblue", color = "white", alpha = 0.8) +
+    geom_histogram(binwidth = 0.01, fill = "blue", color = "white", alpha = 0.8) +
     theme_minimal() +
     labs(x = "Gini Index", y = "Frequency", title = title) +
     theme(
-      axis.text = element_text(size = 15),
-      axis.title = element_text(size = 15),
-      plot.title = element_text(size = 16, face = "bold")
+      axis.text = element_text(size = 25),
+      axis.title = element_text(size = 25),
+      plot.title = element_text(size = 25)
     )
 }
 renal_gini_plot <- plot_gini_histogram(renal_gini, "Renal: Gini Index")
@@ -169,10 +179,13 @@ bladder_gini_plot <- plot_gini_histogram(bladder_gini, "Bladder: Gini Index")
 print(renal_gini_plot)
 print(bladder_gini_plot)
 
-# Save the plot as .pdf
+# Save the plot as .pdf for the thesis
 #ggsave("renal_gini_index_diversity.pdf", plot = renal_gini_plot, width = 6, height = 5, units = "in")
 #ggsave("bladder_gini_index_diversity.pdf", plot = bladder_gini_plot, width = 6, height = 5, units = "in")
 
+# Save the plot as .png for defense
+#ggsave("renal_gini_index_diversity.png", plot = renal_gini_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
+#ggsave("bladder_gini_index_diversity.png", plot = bladder_gini_plot, width = 7, height = 5, units = "in", dpi = 300, bg = "white")
 
 ################################################################################
 
@@ -184,22 +197,26 @@ plot_continuous_clinical <- function(data, xvar, yvar, xlab, ylim_range, label_p
     stat_cor(method = "spearman", 
              label.x = label_pos[1], 
              label.y = label_pos[2], 
-             size = 5) +
+             size = 3) +
     coord_cartesian(ylim = ylim_range) +
     theme_minimal() +
     labs(x = xlab, y = "Normalized Shannon Diversity") +
-    theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15))
+    theme(axis.text = element_text(size = 10), axis.title = element_text(size = 10))
 }
 
-plot_categorical_clinical <- function(data, xvar, yvar, xlab, test = "t.test", ylim_range) {
+plot_categorical_clinical <- function(data, xvar, yvar, xlab, test = "t.test", ylim_range, label_pos = c(Inf, Inf)) {
   ggplot(data, aes_string(x = xvar, y = yvar)) +
     geom_boxplot(alpha = 0.5, fill = "royalblue") +
     geom_jitter(width = 0.2, alpha = 0.7, color = "blue") +
-    stat_compare_means(method = test, size = 5, label.y = max(ylim_range, na.rm = TRUE)) +
+    stat_compare_means(method = test, 
+                       size = 3, 
+                       label.x = label_pos[1], 
+                       label.y = label_pos[2]
+                       ) +
     coord_cartesian(ylim = ylim_range) +
     theme_minimal() +
     labs(x = xlab, y = "Normalized Shannon Diversity") +
-    theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15))
+    theme(axis.text = element_text(size = 10), axis.title = element_text(size = 10))
 }
 
 Y <- "NormalizedShannon"
@@ -246,14 +263,14 @@ renal_data_prepped <- renal_data %>%
 # PLot
 ylim_range <- range(renal_data_prepped[[Y]], na.rm = TRUE)
 
-age_plot <- plot_continuous_clinical(renal_data_prepped, "AgeSample", Y, "Age", ylim_range, c(30, 0.2))
-sex_plot <- plot_categorical_clinical(renal_data_prepped, "Sex", Y, "Sex", "t.test", ylim_range)
-charlson_plot <- plot_categorical_clinical(renal_data_prepped, "CharlsonIndex", Y, "Charlson Index", "kruskal.test", ylim_range)
-leibscore_plot <- plot_categorical_clinical(renal_data_prepped, "Leibscore", Y, "Leibscore", "kruskal.test", ylim_range)
+age_plot <- plot_continuous_clinical(renal_data_prepped, "AgeSample", Y, "Age", ylim_range, c(30, 0.25))
+sex_plot <- plot_categorical_clinical(renal_data_prepped, "Sex", Y, "Sex", "t.test", ylim_range, c(1, 0.25))
+charlson_plot <- plot_categorical_clinical(renal_data_prepped, "CharlsonIndex", Y, "Charlson Index", "kruskal.test", ylim_range, c(3, 0.2))
+leibscore_plot <- plot_categorical_clinical(renal_data_prepped, "Leibscore", Y, "Leibscore", "kruskal.test", ylim_range, c(3, 0.2))
 creaktivtprotein_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaCReaktivtProtein", Y, "C-Reactive Protein", ylim_range, c(100, 0.2))
-haemoglobin_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaHaemoglobin", Y, "Haemoglobin", ylim_range, c(Inf, 0.2))
+haemoglobin_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaHaemoglobin", Y, "Haemoglobin", ylim_range, c(5, 0.25))
 lactatdehydrogenase_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaSLactatdehydrogenase", Y, "LDH", ylim_range, c(300, 0.2))
-natrium_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaSeNatrium", Y, "Se-Natrium", ylim_range, c(Inf, 0.2))
+natrium_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaSeNatrium", Y, "Se-Natrium", ylim_range, c(130, 0.25))
 neutrofileGranulocyt_plot <- plot_continuous_clinical(renal_data_prepped, "Pop1_DSkemaNeutrofileGranulocyt", Y, "Neutrophil Granulocytes", ylim_range, c(10, 0.2))
 
 renal_clin_vars_all <- (
@@ -263,13 +280,17 @@ renal_clin_vars_all <- (
 ) + 
   plot_annotation(tag_levels = 'a') &
   theme(
-    plot.tag = element_text(size = 45, face = "bold"),
-    axis.text = element_text(size = 45),
-    axis.title = element_text(size = 45)
+    plot.tag = element_text(size = 15, face = "bold"),
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 10),
   )
-#print(renal_clin_vars_all)
+print(renal_clin_vars_all)
+
+# Save the plot as .png for the thesis
 # ggsave("renal_clinical_shannon_grid.pdf", renal_clin_vars_all, width = 40, height = 30)
 
+# Save the plot as .png for defense
+ggsave("renal_clinical_shannon_grid.png", plot = renal_clin_vars_all, width = 8, height = 8, units = "in", dpi = 300, bg = "white")
 
 ### Bladder Data ###############################################################
 # Prepare Data
@@ -307,18 +328,18 @@ ylim_range <- range(bladder_data_prepped[[Y]], na.rm = TRUE)
 
 age_plot <- plot_continuous_clinical(bladder_data_prepped, "Age", Y, "Age", ylim_range, c(30, 0.6))
 bmi_plot <- plot_continuous_clinical(bladder_data_prepped, "BMI", Y, "BMI", ylim_range, c(25, 0.6))
-sex_plot <- plot_categorical_clinical(bladder_data_prepped, "Sex", Y, "Sex", "t.test", ylim_range)
-smoking_plot <- plot_categorical_clinical(bladder_data_prepped, "Smoking_status", Y, "Smoking Status", "kruskal.test", ylim_range)
-tumor_stage_plot <- plot_categorical_clinical(bladder_data_prepped, "TURBT_Tstage", Y, "Tumor Stage", "kruskal.test", ylim_range)
+sex_plot <- plot_categorical_clinical(bladder_data_prepped, "Sex", Y, "Sex", "t.test", ylim_range, c(1, 0.65))
+smoking_plot <- plot_categorical_clinical(bladder_data_prepped, "Smoking_status", Y, "Smoking Status", "kruskal.test", ylim_range,  c(1, 0.65))
+tumor_stage_plot <- plot_categorical_clinical(bladder_data_prepped, "TURBT_Tstage", Y, "Tumor Stage", "kruskal.test", ylim_range,  c(1, 0.65))
 bladder_data_prepped_clean <- bladder_data_prepped %>%
   filter(!is.na(Death))
-death_plot <- plot_categorical_clinical(bladder_data_prepped_clean, "Death", Y, "Death", "t.test", ylim_range)
+death_plot <- plot_categorical_clinical(bladder_data_prepped_clean, "Death", Y, "Death", "t.test", ylim_range,  c(1, 0.65))
 bladder_data_prepped_clean <- bladder_data_prepped %>%
   filter(!is.na(Clinical_relapse))
-clinRelapse_plot <- plot_categorical_clinical(bladder_data_prepped_clean, "Clinical_relapse", Y, "Clinical Relapse", "t.test", ylim_range)
+clinRelapse_plot <- plot_categorical_clinical(bladder_data_prepped_clean, "Clinical_relapse", Y, "Clinical Relapse", "t.test", ylim_range,  c(1, 0.65))
 bladder_data_prepped_clean <- bladder_data_prepped %>%
   filter(!is.na(postCX_ctDNA_status))
-ctDNAStatus_plot <- plot_categorical_clinical(bladder_data_prepped_clean, "postCX_ctDNA_status", Y, "Post-Chemo ctDNA", "t.test", ylim_range)
+ctDNAStatus_plot <- plot_categorical_clinical(bladder_data_prepped_clean, "postCX_ctDNA_status", Y, "Post-Chemo ctDNA", "t.test", ylim_range,  c(1, 0.65))
 
 bladder_clin_vars_all <- (
   (age_plot + sex_plot + bmi_plot) /
@@ -327,11 +348,15 @@ bladder_clin_vars_all <- (
 ) + 
   plot_annotation(tag_levels = 'a') &
   theme(
-    plot.tag = element_text(size = 45, face = "bold"),
-    axis.text = element_text(size = 45),
-    axis.title = element_text(size = 45)
+    plot.tag = element_text(size = 15, face = "bold"),
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 10)
   )
-#print(bladder_clin_vars_all)
+print(bladder_clin_vars_all)
+
+# Save the plot as .png for the thesis
 #ggsave("bladder_clinical_shannon_grid.pdf", bladder_clin_vars_all, width = 40, height = 30)
 
+# Save the plot as .png for defense
+ggsave("bladder_clinical_shannon_grid.png", plot = bladder_clin_vars_all, width = 8, height = 8, units = "in", dpi = 300, bg = "white")
 

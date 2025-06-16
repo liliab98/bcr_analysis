@@ -1,7 +1,7 @@
 # Gene Usage Correlation with clinical Variables, Liliane Bader, 15.Juni 2025
 
 # Renal and Bladder Datasets ###################################################
-source("github/config.R")
+source("config.R")
 renal_data <- readRDS(renal_data_path)
 bladder_data <- readRDS(bladder_data_path)
 
@@ -523,7 +523,7 @@ rownames(heatmap_J_bladder) <- row_names_bladder
 bladder_V_gene_usage_clinVars_plot <- pheatmap(heatmap_V_bladder,
                                                cluster_rows = FALSE,
                                                cluster_cols = FALSE,
-                                               #main = "Bladder IgH V Gene Usage",
+                                               main = "Bladder IgH V Gene Usage",
                                                display_numbers = signif_V_bladder,
                                                fontsize_row = 10,
                                                fontsize_col = 10,
@@ -548,19 +548,19 @@ print(bladder_V_gene_usage_clinVars_plot)
 bladder_D_gene_usage_clinVars_plot <- pheatmap(heatmap_D_bladder,
                                                cluster_rows = FALSE,
                                                cluster_cols = FALSE,
-                                               #main = "Bladder IgH D Gene Usage",
+                                               main = "Bladder IgH D Gene Usage",
                                                display_numbers = signif_D_bladder,
                                                fontsize_row = 10,
                                                fontsize_col = 15,
-                                               #cluster_row = FALSE,
+                                               cluster_row = FALSE,
                                                color = my_palette,
                                                breaks = my_breaks,
                                                legend = FALSE,
-                                               #heatmap_legend_param = list(
-                                               #  title = "Spearman’s\np (rho)",
-                                               #  title_gp = gpar(fontsize = 11, fontface = "bold"),
-                                               #  labels_gp = gpar(fontsize = 11)
-                                               #  )
+                                               heatmap_legend_param = list(
+                                                 title = "Spearman’s\np (rho)",
+                                                 title_gp = gpar(fontsize = 11, fontface = "bold"),
+                                                 labels_gp = gpar(fontsize = 11)
+                                                 )
 )
 
 # Add custom text annotations for significance symbols
@@ -568,14 +568,14 @@ bladder_D_gene_usage_clinVars_plot <- pheatmap(heatmap_D_bladder,
 
 print(bladder_D_gene_usage_clinVars_plot)
 
-pdf("bladder_D_gene_usage_clinVars.pdf", width = 8, height = 6)
-print(bladder_D_gene_usage_clinVars_plot)
-dev.off()
+# pdf("bladder_D_gene_usage_clinVars.pdf", width = 8, height = 6)
+# print(bladder_D_gene_usage_clinVars_plot)
+# dev.off()
 
 bladder_J_gene_usage_clinVars_plot <- pheatmap(heatmap_J_bladder,
                                                cluster_rows = FALSE,
                                                cluster_cols = FALSE,
-                                               #main = "Bladder IgH J Gene Usage",
+                                               main = "Bladder IgH J Gene Usage",
                                                display_numbers = signif_J_bladder,
                                                fontsize_row = 10,
                                                fontsize_col = 15,
@@ -606,6 +606,7 @@ print(bladder_J_gene_usage_clinVars_plot)
 # png("bladder_J_gene_usage_clinVars.png", width = 10, height = 5, units = "in", res = 300)
 # print(bladder_J_gene_usage_clinVars_plot)
 # dev.off()
+
 ################################################################################
 
 # Heatmap: Renal ###############################################################
@@ -630,7 +631,7 @@ rownames(heatmap_J_renal) <- row_names_renal
 renal_V_gene_usage_clinVars_plot <- pheatmap(heatmap_V_renal,
                                              cluster_rows = FALSE,
                                              cluster_cols = FALSE,
-                                             #main = "Renal IgH V Gene Usage",
+                                             main = "Renal IgH V Gene Usage",
                                              display_numbers = signif_V_renal,
                                              fontsize_row =10,
                                              fontsize_col = 10,
@@ -645,15 +646,15 @@ renal_V_gene_usage_clinVars_plot <- pheatmap(heatmap_V_renal,
 # Add custom text annotations for significance symbols
 #grid.text("Significance:\n* p-value <= 0.05\n** p-value <= 0.01\n*** p-value <= 0.001", x = 0.9, y = 0.1, gp = gpar(fontsize = 8))#, fontface = "bold"))
 
-pdf("renal_V_gene_usage_clinVars.pdf", width = 12, height = 6)
-print(renal_V_gene_usage_clinVars_plot)
-dev.off()
+# pdf("renal_V_gene_usage_clinVars.pdf", width = 12, height = 6)
+# print(renal_V_gene_usage_clinVars_plot)
+# dev.off()
 
 
 renal_D_gene_usage_clinVars_plot <- pheatmap(heatmap_D_renal,
                                              cluster_rows = FALSE,
                                              cluster_cols = FALSE,
-                                             #main = "Renal D Gene Usage",
+                                             main = "Renal D Gene Usage",
                                              display_numbers = signif_D_renal,
                                              fontsize_row = 10,
                                              fontsize_col = 15,
@@ -672,14 +673,14 @@ renal_D_gene_usage_clinVars_plot <- pheatmap(heatmap_D_renal,
 
 print(renal_D_gene_usage_clinVars_plot)
 
-pdf("renal_D_gene_usage_clinVars.pdf", width = 8, height = 6)
-print(renal_D_gene_usage_clinVars_plot)
-dev.off()
+# pdf("renal_D_gene_usage_clinVars.pdf", width = 8, height = 6)
+# print(renal_D_gene_usage_clinVars_plot)
+# dev.off()
 
 renal_J_gene_usage_clinVars_plot <- pheatmap(heatmap_J_renal,
                                              cluster_rows = FALSE,
                                              cluster_cols = FALSE,
-                                             #main = "Renal IgH J Gene Usage",
+                                             main = "Renal IgH J Gene Usage",
                                              display_numbers = signif_J_renal,
                                              fontsize_row = 10,
                                              fontsize_col = 15,
@@ -701,7 +702,7 @@ print(renal_J_gene_usage_clinVars_plot)
 # print(renal_J_gene_usage_clinVars_plot)
 # dev.off()
 
-# Save renal
+#Save renal
 # png("renal_V_gene_usage_clinVars.png", width = 10, height = 5, units = "in", res = 300)
 # print(renal_V_gene_usage_clinVars_plot)
 # dev.off()
@@ -711,14 +712,4 @@ print(renal_J_gene_usage_clinVars_plot)
 # png("renal_J_gene_usage_clinVars.png", width = 10, height = 5, units = "in", res = 300)
 # print(renal_J_gene_usage_clinVars_plot)
 # dev.off()
-
-
-
-
-
-
-
-
-
-
 
